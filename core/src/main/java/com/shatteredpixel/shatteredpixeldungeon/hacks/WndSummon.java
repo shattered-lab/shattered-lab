@@ -108,6 +108,8 @@ public class WndSummon extends WndPick {
 				Messages.get(WndSummon.class, "ally")){
 			@Override
 			protected void onSelect(int i) {
+				//close the bestiary list too, otherwise it covers the map and the cell can't be tapped
+				WndSummon.this.hide();
 				if (i == 0) pickCell(c, false, 1);
 				else if (i == 1) pickCell(c, false, 5);
 				else if (i == 2) pickCell(c, true, 1);

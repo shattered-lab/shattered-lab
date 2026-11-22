@@ -21,6 +21,11 @@ public class ShdChanges {
 	}
 
 	public static void addAllChanges(ArrayList<ChangeInfo> changeInfos){
+		ChangeInfo v111 = new ChangeInfo(m("title111"), true, m("intro111"));
+		v111.hardlight(0x66FF66);
+		changeInfos.add(v111);
+		v111.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.HACK_BESTIARY), m("fixes111"), m("fixes111_desc")));
+
 		ChangeInfo v11 = new ChangeInfo(m("title11"), true, m("intro11"));
 		v11.hardlight(0x66FF66);
 		changeInfos.add(v11);
