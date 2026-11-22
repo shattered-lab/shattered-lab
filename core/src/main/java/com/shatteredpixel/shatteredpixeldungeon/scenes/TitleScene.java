@@ -409,6 +409,12 @@ public class TitleScene extends PixelScene {
 			if (!updateShown && Updates.updateAvailable()){
 				updateShown = true;
 				text(Messages.get(TitleScene.class, "update"));
+				//SHD: open the update window by itself once per new version, a glowing button is easy to miss
+				AvailableUpdateData u = Updates.updateData();
+				if (u != null && SPDSettings.getInt("shd_update_shown", 0) < u.versionCode){
+					SPDSettings.put("shd_update_shown", u.versionCode);
+					onClick();
+				}
 			}
 
 			if (updateShown){
