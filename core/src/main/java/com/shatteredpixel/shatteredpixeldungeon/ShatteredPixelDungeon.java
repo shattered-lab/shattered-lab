@@ -68,6 +68,7 @@ public class ShatteredPixelDungeon extends Game {
 		Sample.INSTANCE.volume( SPDSettings.SFXVol()*SPDSettings.SFXVol()/100f );
 
 		Sample.INSTANCE.load( Assets.Sounds.all );
+		com.shatteredpixel.shatteredpixeldungeon.hacks.HackFx.apply(); //SHD: optional sound, light and shader effects
 		
 	}
 

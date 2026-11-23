@@ -262,6 +262,12 @@ public class GameScene extends PixelScene {
 
 			@Override
 			protected NoosaScript script() {
+				//SHD: water with reflections while shader effects are on (Settings, Display)
+				if (com.watabou.noosa.PostFx.shadersReady()) {
+					com.watabou.noosa.WaterScript ws = com.watabou.noosa.WaterScript.get();
+					ws.prepare();
+					return ws;
+				}
 				return NoosaScriptNoLighting.get();
 			}
 
@@ -802,7 +808,49 @@ public class GameScene extends PixelScene {
 
 	}
 	
+	//SHD: optional light and shader effects (com.watabou.noosa.PostFx, Settings, Display).
+	//The game draws the scene in parts only while one of them is on.
+	private final SceneFx fx = new SceneFx();
+
+	@Override
+	public boolean postFx() {
+		return true;
+	}
+
+	@Override
+	public void drawWorld() {
+		SceneFx.drawPart( this, true );
+	}
+
+	@Override
+	public void drawUI() {
+		SceneFx.drawPart( this, false );
+	}
+
+	@Override
+	public void drawLightSources() {
+		fx.drawLights( mobs );
+	}
+
+	@Override
+	public void drawReflections() {
+		fx.drawReflections( mobs );
+	}
+
+	@Override
+	public void drawBloomObjects() {
+		fx.drawBloom();
+	}
+
+	//a glowing effect (beams, lightning, magic missiles, fire): it gets a glow while shader effects are on
+	public static void addBloomObject( Gizmo g ) {
+		GameScene s = scene;
+		if (s != null) s.fx.addBloom( g );
+	}
+
 	public void destroy() {
+
+		fx.destroy(); //SHD
 		
 		//tell the actor thread to finish, then wait for it to complete any actions it may be doing.
 		if (!waitForActorThread( 4500, true )){
@@ -874,6 +922,8 @@ public class GameScene extends PixelScene {
 	@Override
 	public synchronized void update() {
 		lastOffset = null;
+
+		if (com.watabou.noosa.PostFx.shaders) fx.updateScreen( Game.elapsed ); //SHD
 
 		if (updateItemDisplays){
 			updateItemDisplays = false;
@@ -1101,7 +1151,17 @@ public class GameScene extends PixelScene {
 	
 	private void addBlobSprite( final Blob gas ) {
 		if (gas.emitter == null) {
-			gases.add( new BlobEmitter( gas ) );
+			BlobEmitter e = new BlobEmitter( gas ); //SHD: fire and magic glow while shader effects are on
+			gases.add( e );
+			if (gas instanceof com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire
+					|| gas instanceof com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Inferno
+					|| gas instanceof com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire
+					|| gas instanceof com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity
+					|| gas instanceof com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Alchemy
+					|| gas instanceof com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WellWater
+					|| gas instanceof com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.MagicalFireRoom.EternalFire) {
+				fx.addBloom( e );
+			}
 		}
 	}
 	
@@ -1290,6 +1350,7 @@ public class GameScene extends PixelScene {
 		if (scene != null) {
 			Emitter emitter = (Emitter)scene.emitters.recycle( Emitter.class );
 			emitter.revive();
+			scene.fx.addBloom( emitter ); //SHD
 			return emitter;
 		} else {
 			return null;

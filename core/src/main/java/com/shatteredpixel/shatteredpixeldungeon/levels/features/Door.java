@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.audio.SpatialSound; //SHD
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -38,7 +39,9 @@ public class Door {
 
 		if (Dungeon.level.heroFOV[pos]) {
 			Dungeon.observe();
-			Sample.INSTANCE.play( Assets.Sounds.OPEN );
+			SpatialSound.play( Assets.Sounds.OPEN, pos ); //SHD
+		} else {
+			SpatialSound.playUnseen( Assets.Sounds.OPEN, pos, 1f, 1f ); //SHD
 		}
 	}
 

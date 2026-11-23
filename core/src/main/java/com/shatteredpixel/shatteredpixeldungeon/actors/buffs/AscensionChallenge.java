@@ -244,6 +244,7 @@ public class AscensionChallenge extends Buff {
 	}
 
 	private float stacks = 0;
+	public float shdStacks(){ return stacks; } //SHD: the screen effects read the curse's strength
 	private float damageInc = 0;
 
 	private boolean stacksLowered = false;

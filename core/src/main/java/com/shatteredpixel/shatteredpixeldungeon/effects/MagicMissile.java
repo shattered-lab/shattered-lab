@@ -267,6 +267,7 @@ public class MagicMissile extends Emitter {
 				break;
 		}
 
+		com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.addBloomObject( this ); //SHD
 		revive();
 	}
 	

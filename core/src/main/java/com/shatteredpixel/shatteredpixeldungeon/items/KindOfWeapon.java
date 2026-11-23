@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.audio.SpatialSound; //SHD
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -286,8 +287,18 @@ abstract public class KindOfWeapon extends EquipableItem {
 		return damage;
 	}
 
+	//SHD: spatial sound (Settings, Audio): a hit is heard from the defender's cell, centred while it is off
+	protected static Char hitDefender;
 	public void hitSound( float pitch ){
-		Sample.INSTANCE.play(hitSound, 1, pitch * hitSoundPitch);
+		SpatialSound.play(hitSound, hitDefender, 1, pitch * hitSoundPitch);
+	}
+	public void hitSound( float pitch, Char defender ){
+		hitDefender = defender;
+		try {
+			hitSound( pitch );
+		} finally {
+			hitDefender = null;
+		}
 	}
 	
 }

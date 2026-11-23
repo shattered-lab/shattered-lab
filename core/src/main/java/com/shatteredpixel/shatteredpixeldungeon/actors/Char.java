@@ -96,6 +96,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Necromancer;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
+import com.shatteredpixel.shatteredpixeldungeon.audio.SpatialSound; //SHD
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
@@ -321,8 +322,18 @@ public abstract class Char extends Actor {
 		}
 	}
 
+	protected static Char hitDefender; //SHD
+	public void hitSound( float pitch, Char defender ){ //SHD
+		hitDefender = defender; //SHD
+		try {
+			hitSound( pitch );
+		} finally {
+			hitDefender = null; //SHD
+		}
+	}
+
 	public void hitSound( float pitch ){
-		Sample.INSTANCE.play(Assets.Sounds.HIT, 1, pitch);
+		SpatialSound.play(Assets.Sounds.HIT, hitDefender != null ? hitDefender : this, 1, pitch); //SHD
 	}
 
 	public boolean blockSound( float pitch ) {
@@ -380,7 +391,10 @@ public abstract class Char extends Actor {
 			if (visibleFight) {
 				enemy.sprite.showStatus( CharSprite.POSITIVE, Messages.get(this, "invulnerable") );
 
-				Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY, 1f, Random.Float(0.96f, 1.05f));
+				SpatialSound.play(Assets.Sounds.HIT_PARRY, enemy, 1f, Random.Float(0.96f, 1.05f)); //SHD
+			}
+			else{
+				SpatialSound.playUnseen(Assets.Sounds.HIT_PARRY, enemy.pos, 1f, Random.Float(0.96f, 1.05f)); //SHD
 			}
 
 			return false;
@@ -499,8 +513,11 @@ public abstract class Char extends Actor {
 			}
 			if (visibleFight) {
 				if (effectiveDamage > 0 || !enemy.blockSound(Random.Float(0.96f, 1.05f))) {
-					hitSound(Random.Float(0.87f, 1.15f));
+					hitSound(Random.Float(0.87f, 1.15f), enemy); //SHD
 				}
+			} else {
+				SpatialSound.playUnseen(effectiveDamage > 0 ? Assets.Sounds.HIT : Assets.Sounds.HIT_PARRY, //SHD
+						enemy.pos, 1f, Random.Float(0.87f, 1.15f));
 			}
 
 			// If the enemy is already dead, interrupt the attack.
@@ -598,7 +615,10 @@ public abstract class Char extends Actor {
 			}
 			if (visibleFight) {
 				//TODO enemy.defenseSound? currently miss plays for monks/crab even when they parry
-				Sample.INSTANCE.play(Assets.Sounds.MISS);
+				SpatialSound.play(Assets.Sounds.MISS, enemy); //SHD
+			}
+			else{
+				SpatialSound.playUnseen(Assets.Sounds.MISS, enemy.pos, 1f, 1f); //SHD
 			}
 			
 			return false;

@@ -289,6 +289,8 @@ public class ScrollOfTeleportation extends Scroll {
 			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 		}
 
+		if (ch == Dungeon.hero) com.watabou.noosa.PostFx.triggerTeleport(); //SHD
+
 		if (Dungeon.level.heroFOV[ch.pos] && ch != Dungeon.hero ) {
 			CellEmitter.get(ch.pos).start(Speck.factory(Speck.LIGHT), 0.2f, 3);
 		}

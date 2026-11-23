@@ -70,6 +70,7 @@ public class Lightning extends Group {
 		this.callback = callback;
 		
 		life = DURATION;
+		com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene.addBloomObject( this ); //SHD
 	}
 	
 	private static final double A = 180 / Math.PI;

@@ -131,12 +131,14 @@ public class Game implements ApplicationListener {
 			Blending.useDefault();
 			TextureCache.reload();
 			Vertexbuffer.reload();
+			PostFx.release(); //SHD: rebuilt on the next frame
 		}
 
 		if (height != Game.height || width != Game.width) {
 
 			Game.width = width;
 			Game.height = height;
+			PostFx.release(); //SHD: rebuilt at the new size on the next frame
 			
 			resetScene();
 		}
@@ -157,6 +159,12 @@ public class Game implements ApplicationListener {
 		if (justResumed){
 			justResumed = false;
 			if (DeviceCompat.isAndroid()) return;
+		}
+
+		//SHD: optional light and shader effects (off by default); false means draw as usual
+		if (PostFx.active() && scene != null && scene.postFx() && !requestedReset && PostFx.render(scene)) {
+			step();
+			return;
 		}
 
 		NoosaScript.get().resetCamera();

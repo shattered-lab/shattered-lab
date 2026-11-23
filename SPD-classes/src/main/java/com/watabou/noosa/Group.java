@@ -30,7 +30,7 @@ import java.util.Comparator;
 
 public class Group extends Gizmo {
 
-	protected ArrayList<Gizmo> members;
+	public ArrayList<Gizmo> members; //SHD: public, the post effects draw parts of a scene (was protected)
 	
 	// Accessing it is a little faster,
 	// than calling members.getSize()

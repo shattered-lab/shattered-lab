@@ -46,6 +46,9 @@ public enum Sample {
 		
 		ids.clear();
 		delayedSFX.clear();
+		synchronized (loadingQueue) { //SHD: a reset also drops sounds still waiting to load
+			loadingQueue.clear();
+		}
 
 	}
 
@@ -179,6 +182,10 @@ public enum Sample {
 
 	public void volume( float value ) {
 		globalVolume = value;
+	}
+
+	public synchronized boolean isLoaded( Object id ) { //SHD: room acoustics asks if its copies are in
+		return ids.containsKey( id );
 	}
 
 	public boolean isEnabled() {

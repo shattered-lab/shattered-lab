@@ -58,6 +58,28 @@ public class Scene extends Group {
 	
 	}
 
+	//SHD: post effects (PostFx). A scene that returns true here is drawn in parts:
+	//the world, its light sources, reflections and glowing objects, then the interface on top
+	public boolean postFx() {
+		return false;
+	}
+
+	public void drawWorld() {
+		draw();
+	}
+
+	public void drawLightSources() {
+	}
+
+	public void drawReflections() {
+	}
+
+	public void drawBloomObjects() {
+	}
+
+	public void drawUI() {
+	}
+
 	@Override
 	public void update() {
 		super.update();

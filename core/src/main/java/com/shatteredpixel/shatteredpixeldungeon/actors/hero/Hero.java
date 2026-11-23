@@ -79,6 +79,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
+import com.shatteredpixel.shatteredpixeldungeon.audio.SpatialSound; //SHD
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -431,14 +432,14 @@ public class Hero extends Char {
 	}
 
 	@Override
-	public void hitSound(float pitch) {
+	public void hitSound(float pitch, Char defender) { //SHD
 		if (!RingOfForce.fightingUnarmed(this)) {
-			belongings.attackingWeapon().hitSound(pitch);
+			belongings.attackingWeapon().hitSound(pitch, defender); //SHD
 		} else if (RingOfForce.getBuffedBonus(this, RingOfForce.Force.class) > 0) {
 			//pitch deepens by 2.5% (additive) per point of strength, down to 75%
-			super.hitSound( pitch * GameMath.gate( 0.75f, 1.25f - 0.025f*STR(), 1f) );
+			super.hitSound( pitch * GameMath.gate( 0.75f, 1.25f - 0.025f*STR(), 1f), defender ); //SHD
 		} else {
-			super.hitSound(pitch * 1.1f);
+			super.hitSound(pitch * 1.1f, defender); //SHD
 		}
 	}
 
@@ -1305,8 +1306,8 @@ public class Hero extends Char {
 			if (hasKey) {
 				
 				sprite.operate( doorCell );
-				
-				Sample.INSTANCE.play( Assets.Sounds.UNLOCK );
+
+				SpatialSound.play(Assets.Sounds.UNLOCK, doorCell); //SHD
 				
 			} else {
 				GLog.w( Messages.get(this, "locked_door") );
@@ -2354,22 +2355,22 @@ public class Hero extends Char {
 		boolean wasHighGrass = Dungeon.level.map[step] == Terrain.HIGH_GRASS;
 
 		super.move( step, travelling);
-		
+
 		if (!flying && travelling) {
 			if (Dungeon.level.water[pos]) {
-				Sample.INSTANCE.play( Assets.Sounds.WATER, 1, Random.Float( 0.8f, 1.25f ) );
+				SpatialSound.play( Assets.Sounds.WATER, this, 1, Random.Float( 0.8f, 1.25f ) ); //SHD
 			} else if (Dungeon.level.map[pos] == Terrain.EMPTY_SP) {
-				Sample.INSTANCE.play( Assets.Sounds.STURDY, 1, Random.Float( 0.96f, 1.05f ) );
+				SpatialSound.play( Assets.Sounds.STURDY, this, 1, Random.Float( 0.96f, 1.05f ) ); //SHD
 			} else if (Dungeon.level.map[pos] == Terrain.GRASS
 					|| Dungeon.level.map[pos] == Terrain.EMBERS
 					|| Dungeon.level.map[pos] == Terrain.FURROWED_GRASS){
 				if (step == pos && wasHighGrass) {
-					Sample.INSTANCE.play(Assets.Sounds.TRAMPLE, 1, Random.Float( 0.96f, 1.05f ) );
+					SpatialSound.play( Assets.Sounds.TRAMPLE, this, 1, Random.Float( 0.96f, 1.05f ) ); //SHD
 				} else {
-					Sample.INSTANCE.play( Assets.Sounds.GRASS, 1, Random.Float( 0.96f, 1.05f ) );
+					SpatialSound.play( Assets.Sounds.GRASS, this, 1, Random.Float( 0.96f, 1.05f ) ); //SHD
 				}
 			} else {
-				Sample.INSTANCE.play( Assets.Sounds.STEP, 1, Random.Float( 0.96f, 1.05f ) );
+				SpatialSound.play( Assets.Sounds.STEP, this, 1, Random.Float( 0.96f, 1.05f ) ); //SHD
 			}
 		}
 	}

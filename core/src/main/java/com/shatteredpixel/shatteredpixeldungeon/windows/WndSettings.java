@@ -221,6 +221,8 @@ public class WndSettings extends WndTabbed {
 		ColorBlock sep1;
 		CheckBox chkFullscreen;
 		CheckBox chkLandscape;
+		CheckBox chkLight; //SHD
+		CheckBox chkShaders; //SHD
 		ColorBlock sep2;
 		OptionSlider optBrightness;
 		OptionSlider optVisGrid;
@@ -268,6 +270,27 @@ public class WndSettings extends WndTabbed {
 				chkLandscape.checked(SPDSettings.landscape());
 				add(chkLandscape);
 			}
+
+			//SHD: optional dynamic light and shader effects, off by default
+			chkLight = new CheckBox(Messages.get(com.shatteredpixel.shatteredpixeldungeon.hacks.HackFx.class, "light")) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					com.shatteredpixel.shatteredpixeldungeon.hacks.HackFx.light(checked());
+				}
+			};
+			chkLight.checked(com.shatteredpixel.shatteredpixeldungeon.hacks.HackFx.light());
+			add(chkLight);
+
+			chkShaders = new CheckBox(Messages.get(com.shatteredpixel.shatteredpixeldungeon.hacks.HackFx.class, "shaders")) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					com.shatteredpixel.shatteredpixeldungeon.hacks.HackFx.shaders(checked());
+				}
+			};
+			chkShaders.checked(com.shatteredpixel.shatteredpixeldungeon.hacks.HackFx.shaders());
+			add(chkShaders);
 
 			sep2 = new ColorBlock(1, 1, 0xFF000000);
 			add(sep2);
@@ -332,6 +355,16 @@ public class WndSettings extends WndTabbed {
 				chkLandscape.setRect(0, bottom + GAP, width, BTN_HEIGHT);
 				bottom = chkLandscape.bottom();
 			}
+
+			//SHD
+			if (width > 200) {
+				chkLight.setRect(0, bottom + GAP, width/2-GAP/2, BTN_HEIGHT);
+				chkShaders.setRect(chkLight.right() + GAP, chkLight.top(), width/2-GAP/2, BTN_HEIGHT);
+			} else {
+				chkLight.setRect(0, bottom + GAP, width, BTN_HEIGHT);
+				chkShaders.setRect(0, chkLight.bottom() + GAP, width, BTN_HEIGHT);
+			}
+			bottom = chkShaders.bottom();
 
 			sep2.size(width, 1);
 			sep2.y = bottom + GAP;
@@ -908,6 +941,8 @@ public class WndSettings extends WndTabbed {
 		ColorBlock sep3;
 		CheckBox chkIgnoreSilent;
 		CheckBox chkMusicBG;
+		ColorBlock sepFx; //SHD
+		CheckBox chkSound3d; //SHD
 
 		@Override
 		protected void createChildren() {
@@ -1000,6 +1035,19 @@ public class WndSettings extends WndTabbed {
 				chkMusicBG.checked(SPDSettings.playMusicInBackground());
 				add(chkMusicBG);
 			}
+
+			//SHD: optional 3D sound and echo, off by default
+			sepFx = new ColorBlock(1, 1, 0xFF000000);
+			add(sepFx);
+			chkSound3d = new CheckBox(Messages.get(com.shatteredpixel.shatteredpixeldungeon.hacks.HackFx.class, "sound")) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					com.shatteredpixel.shatteredpixeldungeon.hacks.HackFx.sound(checked());
+				}
+			};
+			chkSound3d.checked(com.shatteredpixel.shatteredpixeldungeon.hacks.HackFx.sound());
+			add(chkSound3d);
 		}
 
 		@Override
@@ -1044,6 +1092,12 @@ public class WndSettings extends WndTabbed {
 				chkMusicBG.setRect(0, sep3.y + 1 + GAP, width, BTN_HEIGHT);
 				height = chkMusicBG.bottom();
 			}
+
+			//SHD
+			sepFx.size(width, 1);
+			sepFx.y = height + GAP;
+			chkSound3d.setRect(0, sepFx.y + 1 + GAP, width, BTN_HEIGHT);
+			height = chkSound3d.bottom();
 		}
 
 	}
