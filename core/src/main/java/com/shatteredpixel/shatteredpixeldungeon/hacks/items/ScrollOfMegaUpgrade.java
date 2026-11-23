@@ -12,6 +12,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.InventoryScroll;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
@@ -45,6 +46,14 @@ public class ScrollOfMegaUpgrade extends InventoryScroll {
 		WndWorkshop.setLevel(item, item.level() + AMOUNT);
 		curUser.sprite.emitter().start(Speck.factory(Speck.UP), 0.2f, 5);
 		GLog.p(Messages.get(this, "upgraded", item.name(), item.level()));
+
+		//player request: keep the item list open while scrolls are left in the stack.
+		//closing the list stops, the remaining scrolls stay in the backpack
+		ScrollOfMegaUpgrade next = curUser.belongings.getItem(ScrollOfMegaUpgrade.class);
+		if (next != null) {
+			curItem = next;
+			GameScene.selectItem(next.itemSelector);
+		}
 	}
 
 	@Override

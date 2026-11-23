@@ -97,7 +97,8 @@ public class Emitter extends Group {
 		this.lightMode = factory.lightMode();
 
 		this.interval = interval;
-		this.quantity = quantity;
+		//SHD: cap particles per effect; some wands emit level/2 particles and huge levels froze the game
+		this.quantity = Math.min(quantity, 200);
 
 		count = 0;
 		time = interval - delay;
