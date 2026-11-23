@@ -51,7 +51,7 @@ public class Healing extends Buff {
 	public boolean act(){
 
 		if (target.HP < target.HT) {
-			target.HP = Math.min(target.HT, target.HP + healingThisTick());
+			target.HP = (int)Math.min(target.HT, (long)target.HP + healingThisTick()); //SHD: no int overflow at huge HP
 
 			if (target.HP == target.HT && target instanceof Hero) {
 				((Hero) target).resting = false;
@@ -101,7 +101,7 @@ public class Healing extends Buff {
 	}
 	
 	public void increaseHeal( int amount ){
-		healingLeft += amount;
+		healingLeft = (int)Math.min(Integer.MAX_VALUE, (long)healingLeft + amount); //SHD: no int overflow
 	}
 	
 	@Override

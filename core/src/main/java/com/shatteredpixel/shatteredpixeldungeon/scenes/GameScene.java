@@ -949,6 +949,9 @@ public class GameScene extends PixelScene {
 			waterOfs = water.offsetY(); //re-assign to account for auto adjust
 		}
 
+		//SHD: HP wrapped below zero by an int overflow stops the game: put it back before checking
+		if (Dungeon.hero.HP < -Hero.HT_CAP) Dungeon.hero.repairOverflowHP();
+
 		if (!Actor.processing() && Dungeon.hero.isAlive()) {
 			if (actorThread == null || !actorThread.isAlive()) {
 				

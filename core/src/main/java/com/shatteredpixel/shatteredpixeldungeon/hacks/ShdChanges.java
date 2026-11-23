@@ -25,6 +25,7 @@ public class ShdChanges {
 		v12.hardlight(0x66FF66);
 		changeInfos.add(v12);
 		v12.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.TORCH), m("fx12"), m("fx12_desc")));
+		v12.addButton(new ChangeButton(new ItemSprite(ItemSpriteSheet.POTION_CRIMSON), m("fixes12"), m("fixes12_desc")));
 
 		ChangeInfo v112 = new ChangeInfo(m("title112"), true, m("intro112"));
 		v112.hardlight(0x66FF66);

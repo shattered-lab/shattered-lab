@@ -258,19 +258,30 @@ public class Hero extends Char {
 		visibleEnemies = new ArrayList<>();
 	}
 	
+	//SHD: max HP is capped, so that healing (up to the whole max HP) can never overflow an int.
+	//A ring of might at +28000 made HT 2147483647, and the next heal wrapped HP to -2147482609
+	public static final int HT_CAP = 1_000_000_000;
+
+	//SHD: HP far below zero is an overflow, never real damage: back to full
+	public void repairOverflowHP(){
+		if (HP < -HT_CAP) HP = HT;
+	}
+
 	public void updateHT( boolean boostHP ){
-		int curHT = HT;
+		long curHT = HT; //SHD: long math and a cap, see HT_CAP
 		
-		HT = 20 + 5*(lvl-1) + HTBoost;
-		float multiplier = RingOfMight.HTMultiplier(this);
-		HT = Math.round(multiplier * HT);
+		long ht = 20L + 5L*(lvl-1) + HTBoost;
+		double multiplier = RingOfMight.HTMultiplier(this);
+		ht = (long)Math.min( (double)HT_CAP, Math.round(multiplier * ht) );
 		
 		if (buff(ElixirOfMight.HTBoost.class) != null){
-			HT += buff(ElixirOfMight.HTBoost.class).boost();
+			ht += buff(ElixirOfMight.HTBoost.class).boost();
 		}
+		HT = (int)Math.max( 1, Math.min( ht, HT_CAP ) );
 		
+		repairOverflowHP();
 		if (boostHP){
-			HP += Math.max(HT - curHT, 0);
+			HP = (int)Math.min( (long)HP + Math.max( HT - curHT, 0 ), HT );
 		}
 		HP = Math.min(HP, HT);
 	}
@@ -347,6 +358,11 @@ public class Hero extends Char {
 		STR = bundle.getInt( STRENGTH );
 
 		belongings.restoreFromBundle( bundle );
+
+		//SHD: saves from before the HT cap: bring an overflowed max or current HP back into range
+		if (HT > HT_CAP || HT < 0) HT = HT_CAP;
+		repairOverflowHP();
+		HP = Math.min(HP, HT);
 	}
 	
 	public static void preview( GamesInProgress.Info info, Bundle bundle ) {
@@ -838,6 +854,8 @@ public class Hero extends Char {
 	
 	@Override
 	public boolean act() {
+
+		repairOverflowHP(); //SHD
 		
 		//calls to dungeon.observe will also update hero's local FOV.
 		fieldOfView = Dungeon.level.heroFOV;
