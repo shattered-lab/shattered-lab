@@ -20,6 +20,7 @@ Shattered Lab is a sandbox mod for [Shattered Pixel Dungeon](https://github.com/
 ## Install
 
 - **Android 5.0+:** `ShatteredLab-*.apk`
+- **Windows:** `ShatteredLab-*-windows.zip`, unzip it and run `ShatteredLab.exe`, no Java needed
 - **PC (Windows, macOS, Linux):** `ShatteredLab-*.jar`, needs Java 11+
 
 The game checks this page for new versions and offers to download them.
